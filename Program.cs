@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+/*builder.WebHost.ConfigureKestrel((context, serverOptions) =>
 {
     var certPem = File.ReadAllText("/home/mikko/localhost+1.pem");
     var eccPem = File.ReadAllText("/home/mikko/localhost+1-key.pem");
@@ -21,7 +21,7 @@ builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         listenoptions.UseHttps(cert);
     });
 
-});
+});*/
 
 var app = builder.Build();
 
