@@ -4,7 +4,7 @@ using TodoApi.Models;
 namespace FilmFreakApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class TodoController : ControllerBase 
 {
     private readonly TodoContext _context;
