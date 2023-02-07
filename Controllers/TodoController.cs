@@ -19,6 +19,7 @@ public class TodoController : ControllerBase
     {
         _context.TodoItems.Add(todoItem);
         await _context.SaveChangesAsync();
+        // Returns 201 with location header and todo-item in response body 
         return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
     }
 
