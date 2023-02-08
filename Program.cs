@@ -10,8 +10,6 @@ var connectionString = builder.Configuration["Database:ConnectionString"];
 // Add services to the container.
 
 builder.Services.AddControllers();
-/*builder.Services
-    .AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));*/
 builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(connectionString));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
