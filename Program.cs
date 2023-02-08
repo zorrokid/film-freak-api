@@ -1,13 +1,18 @@
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
+using FilmFreakApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// user secrets are read by default?
+// and environment specific appsettings?
+var connectionString = builder.Configuration["Database:ConnectionString"];
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services
-    .AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+/*builder.Services
+    .AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));*/
+builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(connectionString));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
