@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FilmFreakApi.Migrations
+namespace FilmFreakApi.Migrations.FilmFreakDb
 {
     [DbContext(typeof(FilmFreakContext))]
     partial class FilmFreakContextModelSnapshot : ModelSnapshot

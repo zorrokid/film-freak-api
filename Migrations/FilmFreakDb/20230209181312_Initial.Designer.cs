@@ -8,11 +8,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FilmFreakApi.Migrations
+namespace FilmFreakApi.Migrations.FilmFreakDb
 {
     [DbContext(typeof(FilmFreakContext))]
-    [Migration("20230208215222_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230209181312_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
