@@ -55,6 +55,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHostedService<ConsumeAuthDbInitializationService>();
+builder.Services.AddScoped<IAuthDbInitializationService, AuthDbInitializationService>();
 
 var app = builder.Build();
 
