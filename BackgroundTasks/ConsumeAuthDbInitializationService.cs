@@ -1,3 +1,4 @@
+//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio
 internal class ConsumeAuthDbInitializationService : BackgroundService
 {
     private readonly IServiceProvider _services;

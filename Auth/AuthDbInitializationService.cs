@@ -31,7 +31,79 @@ public class AuthDbInitializationService : IAuthDbInitializationService // IHost
 
     public async Task Initialize()
     {
-       _logger.LogInformation("Start initializing AuthDb"); 
-       var roleExists = await _roleManager.RoleExistsAsync("Administrator");
+        _logger.LogInformation("Start initializing AuthDb."); 
+        _dbContext.Database.EnsureCreated();
+        await InitializeRoles();
+        await InitializeAdminUser();
+        _logger.LogInformation("Finished initializing AuthDb."); 
+    }
+
+    private async Task InitializeRoles()
+    {
+        foreach (var userRoleName in UserRoles.UserRoleNames)
+        {
+            var roleExists = await _roleManager.RoleExistsAsync(userRoleName);
+            if (roleExists)
+            {
+                _logger.LogInformation($"Role {userRoleName} already exists.");
+            }
+            if (!roleExists)
+            {
+                _logger.LogInformation($"Creating role {userRoleName}.");
+                var result = await _roleManager.CreateAsync(new IdentityRole(userRoleName));
+                if (!result.Succeeded)
+                {
+                    HandleErrors(result.Errors);
+                    throw new Exception($"Failed adding IdentityRole {userRoleName}.");
+                }
+            }
+        }
+    }
+
+    private async Task InitializeAdminUser()
+    {
+        var userName = _config["AdminCredentials:UserName"];
+        var password = _config["AdminCredentials:Password"];
+        var email = _config["AdminCredentials:Email"];
+        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(email))
+        {
+            throw new Exception("One or more of the admin credentials was missing.");
+        }
+        _logger.LogInformation($"Creating admin user {userName}.");
+        var admin = await _userManager.FindByNameAsync(userName);
+        if (admin != null)
+        {
+            _logger.LogTrace("Admin already created.");
+            return;
+        }
+
+        admin = new IdentityUser
+        {
+            UserName = userName,
+            Email = email,
+            EmailConfirmed = true
+        };
+
+        var result = await _userManager.CreateAsync(admin, password);
+        if (!result.Succeeded)
+        {
+            HandleErrors(result.Errors);
+            throw new Exception("Failed creating admin user.");
+        }
+
+        result = await _userManager.AddToRoleAsync(admin, UserRoles.Admin);
+        if (!result.Succeeded)
+        {
+            HandleErrors(result.Errors);
+            throw new Exception("Failed adding admin role.");
+        }
+    }
+
+    private void HandleErrors(IEnumerable<IdentityError> errors)
+    {
+        foreach(var error in errors)
+        {
+            _logger.LogError($"Error {error.Code}: {error.Description}");
+        }
     }
 }
