@@ -22,12 +22,23 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(authDbConnectionString));
 builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(connectionString));
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
 // Auth
+
+var validIssuer = configuration["JWT:ValidIssuer"];
+var validAudience = configuration["JWT:ValidAudience"];
+var secret = configuration["JWT:Secret"];
+if (string.IsNullOrEmpty(validIssuer) || string.IsNullOrEmpty(validAudience) || string.IsNullOrEmpty(secret))
+{
+    throw new Exception("One or more of the JWT token settings are missing.");
+}
 
 builder.Services.AddAuthentication(options => 
 {
@@ -43,10 +54,9 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = configuration["JWT:ValidAudience"],
-        ValidIssuer = configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
-
+        ValidAudience = validIssuer,
+        ValidIssuer = validAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
     };
 });
 
