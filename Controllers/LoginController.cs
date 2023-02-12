@@ -60,7 +60,6 @@ public class LoginController : ControllerBase
         {
             throw new Exception("One or more of the JWT token settings are missing.");
         }
-        _logger.LogInformation($"Secret: {secret}");
         var token = GetToken(authClaims, validIssuer, validAudience, secret);
         return Ok(new
         {
