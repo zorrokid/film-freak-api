@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +22,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(authDbConnectionString));
 builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(connectionString));
-
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
 
 // Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -63,7 +61,33 @@ builder.Services.AddAuthentication(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options => {
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = @"JWT Authorization header using the Bearer scheme.\r\n\r\n 
+            Enter 'Bearer' and token separated with space in the text input below."
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference 
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 
 builder.Services.AddHostedService<ConsumeAuthDbInitializationService>();
 builder.Services.AddScoped<IAuthDbInitializationService, AuthDbInitializationService>();

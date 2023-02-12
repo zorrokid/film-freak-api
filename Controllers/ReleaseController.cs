@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FilmFreakApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FilmFreakApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ReleaseController : ControllerBase 
@@ -25,11 +27,11 @@ public class ReleaseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ReleaseDTO>>> GetReleases()
+    public async Task<IEnumerable<ReleaseDTO>> GetReleases()
     {
-        return await _context.Releases
-            .Select(i => ReleaseToDTO(i))
-            .ToListAsync();
+        var releases = await _context.Releases.ToListAsync();
+        var result = releases.Select(i => ReleaseToDTO(i));
+        return result;
     }
 
     [HttpGet("{id}")]
