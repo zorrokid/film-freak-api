@@ -11,17 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
-// user secrets are read by default?
-// and environment specific appsettings?
-var connectionString = configuration["Database:ConnectionString"];
-var authDbConnectionString = configuration["Database:AuthDbConnectionString"];
+var dbOptions = configuration.GetSection(DatabaseOptions.Database).Get<DatabaseOptions>();
+if (dbOptions == null)
+{
+    throw new Exception("Database options not configured.");
+}
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(authDbConnectionString));
-builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(dbOptions.AuthDbConnectionString));
+builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(dbOptions.ConnectionString));
 
 // Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -30,12 +31,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 // Auth
 
-var validIssuer = configuration["JWT:ValidIssuer"];
-var validAudience = configuration["JWT:ValidAudience"];
-var secret = configuration["JWT:Secret"];
-if (string.IsNullOrEmpty(validIssuer) || string.IsNullOrEmpty(validAudience) || string.IsNullOrEmpty(secret))
+var jwtOptions = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>();
+
+if (jwtOptions == null)
 {
-    throw new Exception("One or more of the JWT token settings are missing.");
+    throw new Exception("JWT options not configured.");
 }
 
 builder.Services.AddAuthentication(options => 
@@ -52,9 +52,9 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = validIssuer,
-        ValidIssuer = validAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+        ValidAudience = jwtOptions.ValidAudience,
+        ValidIssuer = jwtOptions.ValidIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
     };
 });
 

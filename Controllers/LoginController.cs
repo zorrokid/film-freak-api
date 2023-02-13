@@ -53,14 +53,13 @@ public class LoginController : ControllerBase
         {
             authClaims.Add(new Claim(ClaimTypes.Role, userRole));
         }
-        var validIssuer = _configuration["JWT:ValidIssuer"];
-        var validAudience = _configuration["JWT:ValidAudience"];
-        var secret = _configuration["JWT:Secret"];
-        if (string.IsNullOrEmpty(validIssuer) || string.IsNullOrEmpty(validAudience) || string.IsNullOrEmpty(secret))
+
+        var jwtOptions = _configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>();
+        if (jwtOptions == null)
         {
-            throw new Exception("One or more of the JWT token settings are missing.");
+            throw new Exception("JWT options not configured.");
         }
-        var token = GetToken(authClaims, validIssuer, validAudience, secret);
+        var token = GetToken(authClaims, jwtOptions);
         return Ok(new
         {
             token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -70,16 +69,15 @@ public class LoginController : ControllerBase
 
     private JwtSecurityToken GetToken(
         List<Claim> authClaims, 
-        string validIssuer, 
-        string validAudience, 
-        string secret)
+        JwtOptions options
+        )
     {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Secret));
 
         return new JwtSecurityToken(
-            issuer: validIssuer,
-            audience: validAudience,
-            expires: DateTime.Now.AddHours(3),
+            issuer: options.ValidIssuer,
+            audience: options.ValidAudience,
+            expires: DateTime.Now.AddHours(options.ExpirationInHours),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
