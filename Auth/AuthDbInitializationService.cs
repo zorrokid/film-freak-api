@@ -4,37 +4,34 @@ using Microsoft.AspNetCore.Identity;
 
 public interface IAuthDbInitializationService
 {
-    Task Initialize();
+    Task Initialize(AdminCredentialsOptions options);
 }
 
-public class AuthDbInitializationService : IAuthDbInitializationService // IHostedService
+public class AuthDbInitializationService : IAuthDbInitializationService 
 {
     private readonly ILogger<AuthDbInitializationService> _logger;
     private readonly AuthDbContext _dbContext;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IConfiguration _config;
 
     public AuthDbInitializationService(
         ILogger<AuthDbInitializationService> logger, 
         AuthDbContext dbContext, 
         RoleManager<IdentityRole> roleManager, 
-        UserManager<IdentityUser> userManager, 
-        IConfiguration config)
+        UserManager<IdentityUser> userManager)
     {
         _logger = logger;
         _dbContext = dbContext;
         _roleManager = roleManager;
         _userManager = userManager;
-        _config = config;
     }
 
-    public async Task Initialize()
+    public async Task Initialize(AdminCredentialsOptions options)
     {
         _logger.LogInformation("Start initializing AuthDb."); 
         _dbContext.Database.EnsureCreated();
         await InitializeRoles();
-        await InitializeAdminUser();
+        await InitializeAdminUser(options);
         _logger.LogInformation("Finished initializing AuthDb."); 
     }
 
@@ -60,17 +57,10 @@ public class AuthDbInitializationService : IAuthDbInitializationService // IHost
         }
     }
 
-    private async Task InitializeAdminUser()
+    private async Task InitializeAdminUser(AdminCredentialsOptions options)
     {
-        var userName = _config["AdminCredentials:UserName"];
-        var password = _config["AdminCredentials:Password"];
-        var email = _config["AdminCredentials:Email"];
-        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(email))
-        {
-            throw new Exception("One or more of the admin credentials was missing.");
-        }
-        _logger.LogInformation($"Creating admin user {userName}.");
-        var admin = await _userManager.FindByNameAsync(userName);
+        _logger.LogInformation($"Creating admin user {options.UserName}.");
+        var admin = await _userManager.FindByNameAsync(options.UserName);
         if (admin != null)
         {
             _logger.LogTrace("Admin already created.");
@@ -79,12 +69,12 @@ public class AuthDbInitializationService : IAuthDbInitializationService // IHost
 
         admin = new IdentityUser
         {
-            UserName = userName,
-            Email = email,
+            UserName = options.UserName,
+            Email = options.Email,
             EmailConfirmed = true
         };
 
-        var result = await _userManager.CreateAsync(admin, password);
+        var result = await _userManager.CreateAsync(admin, options.Password);
         if (!result.Succeeded)
         {
             HandleErrors(result.Errors);

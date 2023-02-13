@@ -1,4 +1,3 @@
-//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio
 internal class ConsumeAuthDbInitializationService : BackgroundService
 {
     private readonly IServiceProvider _services;
@@ -19,7 +18,17 @@ internal class ConsumeAuthDbInitializationService : BackgroundService
         {
             var authDbInitService = scope.ServiceProvider
                 .GetRequiredService<IAuthDbInitializationService>();
-            await authDbInitService.Initialize();
+            var configuration = scope.ServiceProvider
+                .GetRequiredService<IConfiguration>();
+            var authOptions = configuration
+                .GetSection(AdminCredentialsOptions.AdminCredentials)
+                .Get<AdminCredentialsOptions>();
+            if (authOptions == null)
+            {
+                throw new Exception("AdminCredentils options not configured.");
+            }
+
+            await authDbInitService.Initialize(authOptions);
         }
     }
 } 
