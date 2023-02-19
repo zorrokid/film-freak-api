@@ -19,7 +19,24 @@ if (dbOptions == null)
 
 // Add services to the container.
 
+var corsOptions = configuration.GetSection(CorsOptions.CORS).Get<CorsOptions>();
+if (corsOptions == null)
+{
+    throw new Exception("CORS options not configured.");
+}
+builder.Services.AddCors(options => options.AddDefaultPolicy(
+    policy => 
+    {
+        policy
+            .WithOrigins(corsOptions.AllowedOrigins.ToArray())
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    }
+));
+
 builder.Services.AddControllers();
+
 
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(dbOptions.AuthDbConnectionString));
 builder.Services.AddDbContext<FilmFreakContext>(options => options.UseNpgsql(dbOptions.ConnectionString));
@@ -102,6 +119,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
