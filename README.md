@@ -1,8 +1,33 @@
-# Create and populate app settings
+# FilmFreakApi
+
+## Requirements
+
+- .net 7.0 SDK
+- PostgreSQL-server
+
+## Create and populate app settings
 
 Create and populate `appsettings.Development.json` based from copy of `appsettings.json`.
 
-# Create development certificate 
+```json
+  "Database": {
+    "ConnectionString": "Server=<db server ip>;Port=<db server port>;Database=<filmfreak db>;Username=<username>;Password=<password>",
+    "AuthDbConnectionString": "Server=<db server ip>;Port=<db server port>;Database=<filmfreakauth db>;Username=<username>;Password=<password>"
+  },
+  "AdminCredentials": {
+    "UserName": "<admin user>",
+    "Email": "<admin user email>",
+    "Password": "<admin password>"
+  },
+  "JWT": {
+    "ValidAudience": "https://localhost:5054",
+    "ValidIssuer": "https://localhost:5054",
+    "Secret": "<token secret>",
+    "ExpirationInHours": 1
+  }
+```
+
+## Create development certificate 
 
 Create self-signed develoment certificate and key using mkcert
 
@@ -31,12 +56,16 @@ For use in Docker-container for development environment reference these files in
   }
 ```
 
-# Build Docker image
+## Run in development environment
+
+
+
+## Build Docker image
 
 ```bash
 docker build -t filmfreakapi .
 ```
-# Run API from container
+## Run API from container
 
 ```bash
 docker run -it --rm -p 5054:5054 --network=host --name filmfreakapi filmfreakapi
@@ -46,7 +75,7 @@ docker run -it --rm -p 5054:5054 --network=host --name filmfreakapi filmfreakapi
 
 For development database on host machine and when referring localhost IP in connection string use: 
 
-# Swagger UI
+## Swagger UI
 
 When container is running, Swagger UI should response in:
 
