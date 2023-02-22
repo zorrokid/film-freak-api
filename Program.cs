@@ -107,6 +107,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Note: if multiple instances of this app is run simultaniously, something like this needs to be used:
+// https://www.thereformedprogrammer.net/how-to-safely-apply-an-ef-core-migrate-on-asp-net-core-startup/
 builder.Services.AddHostedService<ConsumeAuthDbInitializationService>();
 builder.Services.AddHostedService<ConsumeFilmFreakDbInitializationService>();
 builder.Services.AddScoped<IAuthDbInitializationService, AuthDbInitializationService>();
