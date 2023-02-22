@@ -25,7 +25,7 @@ if (corsOptions == null)
     throw new Exception("CORS options not configured.");
 }
 builder.Services.AddCors(options => options.AddDefaultPolicy(
-    policy => 
+    policy =>
     {
         policy
             .WithOrigins(corsOptions.AllowedOrigins.ToArray())
@@ -55,13 +55,13 @@ if (jwtOptions == null)
     throw new Exception("JWT options not configured.");
 }
 
-builder.Services.AddAuthentication(options => 
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options => 
+.AddJwtBearer(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
@@ -79,7 +79,8 @@ builder.Services.AddAuthentication(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -95,7 +96,7 @@ builder.Services.AddSwaggerGen(options => {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference 
+                Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
@@ -107,7 +108,9 @@ builder.Services.AddSwaggerGen(options => {
 });
 
 builder.Services.AddHostedService<ConsumeAuthDbInitializationService>();
+builder.Services.AddHostedService<ConsumeFilmFreakDbInitializationService>();
 builder.Services.AddScoped<IAuthDbInitializationService, AuthDbInitializationService>();
+builder.Services.AddScoped<IFilmFreakDbInitializationService, FilmFreakDbInitializationService>();
 
 var app = builder.Build();
 

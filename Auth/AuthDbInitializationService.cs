@@ -1,13 +1,14 @@
 
 using FilmFreakApi.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 public interface IAuthDbInitializationService
 {
     Task Initialize(AdminCredentialsOptions options);
 }
 
-public class AuthDbInitializationService : IAuthDbInitializationService 
+public class AuthDbInitializationService : IAuthDbInitializationService
 {
     private readonly ILogger<AuthDbInitializationService> _logger;
     private readonly AuthDbContext _dbContext;
@@ -15,9 +16,9 @@ public class AuthDbInitializationService : IAuthDbInitializationService
     private readonly UserManager<IdentityUser> _userManager;
 
     public AuthDbInitializationService(
-        ILogger<AuthDbInitializationService> logger, 
-        AuthDbContext dbContext, 
-        RoleManager<IdentityRole> roleManager, 
+        ILogger<AuthDbInitializationService> logger,
+        AuthDbContext dbContext,
+        RoleManager<IdentityRole> roleManager,
         UserManager<IdentityUser> userManager)
     {
         _logger = logger;
@@ -28,11 +29,14 @@ public class AuthDbInitializationService : IAuthDbInitializationService
 
     public async Task Initialize(AdminCredentialsOptions options)
     {
-        _logger.LogInformation("Start initializing AuthDb."); 
-        _dbContext.Database.EnsureCreated();
+        _logger.LogInformation("Start initializing AuthDb.");
+        _logger.LogInformation("Running migrations.");
+        await _dbContext.Database.MigrateAsync();
+        _logger.LogInformation("Initializing roles.");
         await InitializeRoles();
+        _logger.LogInformation("Initializing admin user.");
         await InitializeAdminUser(options);
-        _logger.LogInformation("Finished initializing AuthDb."); 
+        _logger.LogInformation("Finished initializing AuthDb.");
     }
 
     private async Task InitializeRoles()
@@ -91,7 +95,7 @@ public class AuthDbInitializationService : IAuthDbInitializationService
 
     private void HandleErrors(IEnumerable<IdentityError> errors)
     {
-        foreach(var error in errors)
+        foreach (var error in errors)
         {
             _logger.LogError($"Error {error.Code}: {error.Description}");
         }
