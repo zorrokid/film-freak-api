@@ -1,3 +1,4 @@
+# build stage
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
@@ -16,4 +17,5 @@ COPY *.pem /app/
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["dotnet", "FilmFreakApi.dll", "--environment=Development"]
+EXPOSE 8080 
+ENTRYPOINT ["dotnet", "FilmFreakApi.dll", "--environment=Production", "--urls=http://locahost:8080"]
