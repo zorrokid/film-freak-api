@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using FilmFreakApi.Auth.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,6 +114,9 @@ builder.Services.AddHostedService<ConsumeAuthDbInitializationService>();
 builder.Services.AddHostedService<ConsumeFilmFreakDbInitializationService>();
 builder.Services.AddScoped<IAuthDbInitializationService, AuthDbInitializationService>();
 builder.Services.AddScoped<IFilmFreakDbInitializationService, FilmFreakDbInitializationService>();
+
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 var app = builder.Build();
 
