@@ -5,5 +5,6 @@ public class JwtOptions
     public string ValidIssuer { get; set; } = string.Empty;
     public string Secret { get; set; } = string.Empty;
     public int ExpirationInHours { get; set; } = 1;
+    public int RefreshTokenExpirationInHours { get; set; } = 24;
 
 }
