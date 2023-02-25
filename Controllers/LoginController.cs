@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FilmFreakApi.Auth.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,17 +16,23 @@ public class LoginController : ControllerBase
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
     private readonly ILogger<LoginController> _logger;
+    private readonly IJwtTokenService _jwtTokenService;
+    private readonly IRefreshTokenService _refreshTokenService;
 
     public LoginController(
-        UserManager<IdentityUser> userManager, 
-        RoleManager<IdentityRole> roleManager, 
-        IConfiguration configuration, 
-        ILogger<LoginController> logger)
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IConfiguration configuration,
+        ILogger<LoginController> logger,
+        IJwtTokenService jwtTokenService,
+        IRefreshTokenService refreshTokenService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
         _logger = logger;
+        _jwtTokenService = jwtTokenService;
+        _refreshTokenService = refreshTokenService;
     }
 
     [HttpPost]
@@ -50,26 +57,23 @@ public class LoginController : ControllerBase
 
         var userRoles = await _userManager.GetRolesAsync(user);
 
-        foreach(var userRole in userRoles)
+        foreach (var userRole in userRoles)
         {
             authClaims.Add(new Claim(ClaimTypes.Role, userRole));
         }
 
-        var jwtOptions = _configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>();
-        if (jwtOptions == null)
-        {
-            throw new Exception("JWT options not configured.");
-        }
-        var token = GetToken(authClaims, jwtOptions);
+        var token = _jwtTokenService.GenerateJwtToken(authClaims);
+        var refreshToken = _refreshTokenService.GenerateRefreshToken(user);
         return Ok(new
         {
             token = new JwtSecurityTokenHandler().WriteToken(token),
-            expiration = token.ValidTo
+            expiration = token.ValidTo,
+            refreshToken = refreshToken
         });
     }
 
-    private JwtSecurityToken GetToken(
-        List<Claim> authClaims, 
+    private JwtSecurityToken GenerateJwtToken(
+        List<Claim> authClaims,
         JwtOptions options
         )
     {
@@ -83,4 +87,6 @@ public class LoginController : ControllerBase
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
     }
+
+
 }
