@@ -1,3 +1,4 @@
+using FilmFreakApi.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,5 +14,7 @@ public class AuthDbContext : IdentityDbContext<IdentityUser>
     {
         base.OnModelCreating(builder);
     }
+
+    public required DbSet<RefreshToken> RefreshTokens { get; set; }
 
 }
