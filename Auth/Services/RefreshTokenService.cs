@@ -1,5 +1,6 @@
 using FilmFreakApi.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FilmFreakApi.Auth.Services;
 
@@ -31,6 +32,15 @@ public class RefreshTokenService : IRefreshTokenService
         if (jwtOptions == null)
         {
             throw new Exception("JWT options not configured.");
+        }
+
+        // delete previous refresh token
+        var oldRefreshToken = await _dbContext.RefreshTokens
+            .FirstOrDefaultAsync(t => t.IdentityUserId == user.Id);
+
+        if (oldRefreshToken != null)
+        {
+            _dbContext.Remove(oldRefreshToken);
         }
 
         _dbContext.RefreshTokens.Add(new RefreshToken
