@@ -81,5 +81,25 @@ When container is running, Swagger UI should response in:
 
 https://localhost:5054/swagger/index.html
 
+# Migrations
+
+## AuthDb
+
+Create migration:
+
+    dotnet ef migrations add --context AuthDbContext "<migration name>" --output-dir "Migrations/AuthDb"
+
+Update database:
+
+    dotnet ef database update --context AuthDbContext
+
+## FilmFreakDb
+
+    dotnet ef migrations add --context FilmFreakContext "<migration name>" --output-dir "Migrations/FilmFreakDb"
+
+Update database:
+
+    dotnet ef database update --context FilmFreakContext
+
 
 
