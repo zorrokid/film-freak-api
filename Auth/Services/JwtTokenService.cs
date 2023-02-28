@@ -1,13 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FilmFreakApi.Auth.Services;
 
 public interface IJwtTokenService
 {
-    JwtSecurityToken GenerateJwtToken(List<Claim> authClaims);
+    Task<JwtSecurityToken> GenerateJwtToken(IdentityUser user);
     ClaimsPrincipal? GetPrincipal(string token);
 }
 
@@ -15,16 +16,19 @@ public class JwtTokenService : IJwtTokenService
 {
     private readonly ILogger<JwtTokenService> _logger;
     private readonly IConfiguration _configuration;
+    private readonly UserManager<IdentityUser> _userManager;
 
     public JwtTokenService(
         ILogger<JwtTokenService> logger,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        UserManager<IdentityUser> userManager)
     {
         _logger = logger;
         _configuration = configuration;
+        _userManager = userManager;
     }
 
-    public JwtSecurityToken GenerateJwtToken(List<Claim> authClaims)
+    public async Task<JwtSecurityToken> GenerateJwtToken(IdentityUser user)
     {
         var options = _configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>();
         if (options == null)
@@ -34,10 +38,24 @@ public class JwtTokenService : IJwtTokenService
 
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Secret));
 
+        var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        foreach (var userRole in userRoles)
+        {
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+
         return new JwtSecurityToken(
             issuer: options.ValidIssuer,
             audience: options.ValidAudience,
-            expires: DateTime.Now.AddHours(options.ExpirationInHours),
+            expires: DateTime.UtcNow.AddMinutes(options.ExpirationInMinutes),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );

@@ -70,8 +70,10 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true,
         ValidAudience = jwtOptions.ValidAudience,
         ValidIssuer = jwtOptions.ValidIssuer,
+        ClockSkew = TimeSpan.Zero,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
     };
 });

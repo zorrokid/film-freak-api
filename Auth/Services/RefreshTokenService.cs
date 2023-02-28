@@ -27,22 +27,22 @@ public class RefreshTokenService : IRefreshTokenService
 
     public async Task<string> GenerateRefreshToken(IdentityUser user)
     {
-        var token = RefreshTokenGenerator.Generate();
         var jwtOptions = _configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>();
         if (jwtOptions == null)
         {
             throw new Exception("JWT options not configured.");
         }
 
-        // delete previous refresh token
-        var oldRefreshToken = await _dbContext.RefreshTokens
-            .FirstOrDefaultAsync(t => t.IdentityUserId == user.Id);
+        // delete previous refresh token(s)
+        var oldRefreshTokens = await _dbContext.RefreshTokens
+            .Where(t => t.IdentityUserId == user.Id).ToListAsync();
 
-        if (oldRefreshToken != null)
+        if (oldRefreshTokens.Any())
         {
-            _dbContext.Remove(oldRefreshToken);
+            _dbContext.RemoveRange(oldRefreshTokens);
         }
 
+        var token = RefreshTokenGenerator.Generate();
         _dbContext.RefreshTokens.Add(new RefreshToken
         {
             IdentityUserId = user.Id,

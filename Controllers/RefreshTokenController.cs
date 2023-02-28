@@ -14,24 +14,28 @@ public class RefreshTokenController : ControllerBase
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly AuthDbContext _dbContext;
-    private readonly RefreshTokenService _refreshTokenService;
-    private readonly JwtTokenService _jwtTokenService;
+    private readonly IRefreshTokenService _refreshTokenService;
+    private readonly IJwtTokenService _jwtTokenService;
+    private readonly ILogger<RefreshTokenController> _logger;
 
     public RefreshTokenController(
         UserManager<IdentityUser> userManager,
         AuthDbContext dbContext,
-        RefreshTokenService refreshTokenService,
-        JwtTokenService jwtTokenService)
+        IRefreshTokenService refreshTokenService,
+        IJwtTokenService jwtTokenService,
+        ILogger<RefreshTokenController> logger)
     {
         _userManager = userManager;
         _dbContext = dbContext;
         _refreshTokenService = refreshTokenService;
         _jwtTokenService = jwtTokenService;
+        _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
     {
+        _logger.LogInformation("Refresh token request start.");
         var principal = _jwtTokenService.GetPrincipal(tokenModel.AccessToken);
 
         if (principal == null || principal.Identity == null)
@@ -52,19 +56,27 @@ public class RefreshTokenController : ControllerBase
         var refreshToken = await _dbContext.RefreshTokens
             .SingleAsync(t => t.IdentityUserId == user.Id);
 
-        if (refreshToken.Token != tokenModel.RefreshToken || refreshToken.ExpirationTime < DateTime.UtcNow)
+        if (refreshToken.Token != tokenModel.RefreshToken)
         {
+            _logger.LogInformation("Invalid refresh token");
             return BadRequest("Invalid or expired refresh token");
         }
 
-        var newAccessToken = _jwtTokenService.GenerateJwtToken(principal.Claims.ToList());
-        var newRefreshToken = _refreshTokenService.GenerateRefreshToken(user);
-
-        return new ObjectResult(new
+        if (refreshToken.ExpirationTime < DateTime.UtcNow)
         {
-            accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-            expiration = newAccessToken.ValidTo,
-            refreshToken = newRefreshToken
+            _logger.LogInformation("Expired refresh token");
+            return BadRequest("Invalid or expired refresh token");
+        }
+
+        var newAccessToken = await _jwtTokenService.GenerateJwtToken(user);
+        var newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user);
+
+        _logger.LogInformation("Refresh token request end.");
+        return Ok(new TokenResponse
+        {
+            Token = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            Expiration = newAccessToken.ValidTo,
+            RefreshToken = newRefreshToken
         });
     }
 }
