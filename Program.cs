@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using FilmFreakApi.Auth.Services;
+using FilmFreakApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -119,6 +120,8 @@ builder.Services.AddScoped<IFilmFreakDbInitializationService, FilmFreakDbInitial
 
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
