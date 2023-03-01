@@ -1,4 +1,5 @@
 using FilmFreakApi.Auth;
+using FilmFreakApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmFreakApi.Controllers;
@@ -11,7 +12,7 @@ public class RegisterUserController : ControllerBase
     private readonly IUserService _userService;
 
     public RegisterUserController(
-        ILogger<RegisterUserController> logger, 
+        ILogger<RegisterUserController> logger,
         IUserService userService)
     {
         _logger = logger;

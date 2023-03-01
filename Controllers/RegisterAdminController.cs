@@ -1,4 +1,5 @@
 using FilmFreakApi.Auth;
+using FilmFreakApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ public class RegisterAdminController : ControllerBase
     private readonly IUserService _userService;
 
     public RegisterAdminController(
-        ILogger<RegisterAdminController> logger, 
+        ILogger<RegisterAdminController> logger,
         IUserService userService)
     {
         _userService = userService;
