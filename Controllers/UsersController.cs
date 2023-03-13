@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
             userId: u.Id,
             userName: u.UserName ?? ""
         ));
-        return Ok(users);
+        return Ok(userListModels);
     }
 
     [HttpPost]
