@@ -1,7 +1,9 @@
 using FilmFreakApi.Auth;
+using FilmFreakApi.Auth.Exceptions;
 using FilmFreakApi.Models;
 using FilmFreakApi.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 [Authorize(Roles = UserRoles.Admin)]
@@ -16,14 +18,23 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet]
+    [HttpGet("{role}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserListModel>))]
     public async Task<IActionResult> GetUsers(string role)
     {
         var users = await _userService.GetUsers(role);
+        var userListModels = users.Select(u => new UserListModel(
+            email: u.Email ?? "",
+            userId: u.Id,
+            userName: u.UserName ?? ""
+        ));
         return Ok(users);
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<IdentityError>))]
     public async Task<IActionResult> AddUser(UserAddModel userModel)
     {
         var userExists = await _userService.UserExists(userModel.UserName);
@@ -31,21 +42,36 @@ public class UsersController : ControllerBase
         {
             return Conflict("User already registered");
         }
-        await _userService.AddUser(userModel, UserRoles.User);
+        try
+        {
+            await _userService.AddUser(userModel, UserRoles.User);
+        }
+        catch (IdentityException ex)
+        {
+            return BadRequest(ex.Errors);
+        }
         return Ok();
     }
 
     [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(string userId)
     {
-        await _userService.DeleteUser(userId);
+        var user = await _userService.GetUser(userId);
+        if (user == null) return NotFound();
+        await _userService.DeleteUser(user);
         return Ok();
     }
 
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(UserUpdateModel userModel)
     {
-        await _userService.UpdateUser(userModel);
+        var user = await _userService.GetUser(userModel.UserId);
+        if (user == null) return NotFound();
+        await _userService.UpdateUser(user, userModel);
         return Ok();
     }
 }
