@@ -53,7 +53,7 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete]
+    [HttpDelete("{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(string userId)
