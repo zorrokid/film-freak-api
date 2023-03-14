@@ -1,3 +1,5 @@
+namespace FilmFreakApi.Models;
+
 public class RegisterModel
 {
     public RegisterModel(string userName, string password, string email)
@@ -6,7 +8,7 @@ public class RegisterModel
         this.Password = password;
         this.Email = email;
     }
-    public string UserName { get; set; }
-    public string Password { get; set; }
-    public string Email { get; set;}
+    public string UserName { get; }
+    public string Password { get; }
+    public string Email { get; }
 }

@@ -2,7 +2,13 @@ namespace FilmFreakApi.Models;
 
 public class TokenResponse
 {
-    public string Token { get; set; } = string.Empty;
-    public string RefreshToken { get; set; } = string.Empty;
-    public DateTime Expiration { get; set; } = DateTime.MinValue;
+    public TokenResponse(string token, string refreshToken, DateTime expiration)
+    {
+        Token = token;
+        RefreshToken = refreshToken;
+        Expiration = expiration;
+    }
+    public string Token { get; }
+    public string RefreshToken { get; }
+    public DateTime Expiration { get; }
 }

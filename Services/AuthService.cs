@@ -51,12 +51,10 @@ public class AuthService : IAuthService
 
         var token = await _jwtTokenService.GenerateJwtToken(user);
         var refreshToken = await _refreshTokenService.GenerateRefreshToken(user);
-        return new TokenResponse
-        {
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Expiration = token.ValidTo,
-            RefreshToken = refreshToken
-        };
+        return new TokenResponse(
+            token: new JwtSecurityTokenHandler().WriteToken(token),
+            expiration: token.ValidTo,
+            refreshToken: refreshToken);
     }
 
     public async Task<TokenResponse?> RefreshToken(TokenModel tokenModel)
@@ -98,13 +96,10 @@ public class AuthService : IAuthService
         var newAccessToken = await _jwtTokenService.GenerateJwtToken(user);
         var newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user);
 
-        return new TokenResponse
-        {
-            Token = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-            Expiration = newAccessToken.ValidTo,
-            RefreshToken = newRefreshToken
-        };
-
+        return new TokenResponse(
+            token: new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            expiration: newAccessToken.ValidTo,
+            refreshToken: newRefreshToken);
     }
 
 }

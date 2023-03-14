@@ -1,3 +1,4 @@
+using FilmFreakApi.Models;
 using FilmFreakApi.Services;
 using Microsoft.AspNetCore.Mvc;
 

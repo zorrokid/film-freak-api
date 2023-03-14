@@ -1,4 +1,5 @@
 using FilmFreakApi.Auth;
+using FilmFreakApi.Models;
 using FilmFreakApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +23,14 @@ public class RegisterAdminController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterAdminUser(RegisterModel model)
+    public async Task<IActionResult> RegisterAdminUser(UserAddModel model)
     {
         var userExists = await _userService.UserExists(model.UserName);
         if (userExists)
         {
             return Conflict("User already registered");
         }
-        await _userService.RegisterUser(model, UserRoles.Admin);
+        await _userService.AddUser(model, UserRoles.Admin);
         return Ok();
     }
 }

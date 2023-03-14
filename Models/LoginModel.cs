@@ -1,3 +1,5 @@
+namespace FilmFreakApi.Models;
+
 public class LoginModel
 {
     public LoginModel(string userName, string password)
@@ -5,6 +7,6 @@ public class LoginModel
         this.UserName = userName;
         this.Password = password;
     }
-    public string UserName { get; set; }
-    public string Password { get; set; }
+    public string UserName { get; }
+    public string Password { get; }
 }
