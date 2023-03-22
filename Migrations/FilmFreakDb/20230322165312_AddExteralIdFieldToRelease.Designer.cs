@@ -2,6 +2,7 @@
 using FilmFreakApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FilmFreakApi.Migrations.FilmFreakDb
 {
     [DbContext(typeof(FilmFreakContext))]
-    partial class FilmFreakContextModelSnapshot : ModelSnapshot
+    [Migration("20230322165312_AddExteralIdFieldToRelease")]
+    partial class AddExteralIdFieldToRelease
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
