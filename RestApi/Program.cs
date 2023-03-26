@@ -1,13 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using FilmFreakApi.Models;
-using FilmFreakApi.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using FilmFreakApi.Auth.Services;
-using FilmFreakApi.Services;
+using FilmFreakApi.Infrastructure.Persistence;
+using FilmFreakApi.Auth.Options;
+using FilmFreakApi.RestApi.BackgroundTasks;
+using FilmFreakApi.Application.Interfaces;
+using FilmFreakApi.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -122,6 +124,7 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReleaseRepository, ReleaseRepository>();
 
 var app = builder.Build();
 

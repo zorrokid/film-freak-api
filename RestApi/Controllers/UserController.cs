@@ -4,7 +4,7 @@ using FilmFreakApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FilmFreakApi.Controllers;
+namespace FilmFreakApi.RestApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

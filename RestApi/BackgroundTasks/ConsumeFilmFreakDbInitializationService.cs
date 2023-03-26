@@ -1,3 +1,6 @@
+using FilmFreakApi.Infrastructure.Persistence;
+
+namespace FilmFreakApi.RestApi.BackgroundTasks;
 internal class ConsumeFilmFreakDbInitializationService : BackgroundService
 {
     private readonly IServiceProvider _services;

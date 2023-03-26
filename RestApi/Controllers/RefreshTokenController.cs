@@ -1,8 +1,8 @@
+using FilmFreakApi.Auth.Services;
 using FilmFreakApi.Models;
-using FilmFreakApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FilmFreakApi.Controllers;
+namespace FilmFreakApi.RestApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

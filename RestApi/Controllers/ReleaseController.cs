@@ -1,35 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using FilmFreakApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using FilmFreakApi.Application.Interfaces;
+using FilmFreakApi.Domain.Entities;
 
-namespace FilmFreakApi.Controllers;
+namespace FilmFreakApi.RestApi.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ReleaseController : ControllerBase 
+public class ReleaseController : ControllerBase
 {
-    private readonly FilmFreakContext _context;
+    private readonly IReleaseService _releaseService;
 
-    public ReleaseController(FilmFreakContext context)
+    public ReleaseController(IReleaseService releaseService)
     {
-        _context = context;
+        _releaseService = releaseService;
     }
 
     [HttpPost]
     public async Task<ActionResult<ReleaseDTO>> PostRelease(Release release)
     {
-        _context.Releases.Add(release);
-        await _context.SaveChangesAsync();
-        // Returns 201 with location header and todo-item in response body 
+        await _releaseService.AddReleaseAsync(release);
         return CreatedAtAction(nameof(GetRelease), new { id = release.Id }, ReleaseToDTO(release));
     }
 
     [HttpGet]
     public async Task<IEnumerable<ReleaseDTO>> GetReleases()
     {
-        var releases = await _context.Releases.ToListAsync();
+        var releases = await _releaseService.GetReleasesAsync();
         var result = releases.Select(i => ReleaseToDTO(i));
         return result;
     }
@@ -37,15 +36,16 @@ public class ReleaseController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ReleaseDTO>> GetRelease(long id)
     {
-        var release = await _context.Releases.FindAsync(id);
+        var release = await _releaseService.GetReleaseAsync(id);
         if (release == null) return NotFound();
         return ReleaseToDTO(release);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodoItem(long id, Release release)
+    public Task<IActionResult> PutRelease(long id, Release release)
     {
-        if (id != release.Id)
+        throw new NotImplementedException();
+        /*if (id != release.Id)
         {
             return BadRequest();
         }
@@ -53,22 +53,21 @@ public class ReleaseController : ControllerBase
         {
             return NotFound();
         }
-    
+
         _context.Entry(release).State = EntityState.Modified;
         await _context.SaveChangesAsync();
-        return NoContent();
+        return NoContent();*/
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTodoItem(long id)
+    public async Task<IActionResult> DeleteRelease(long id)
     {
-        var release = await _context.Releases.FindAsync(id);
+        var release = await _releaseService.GetReleaseAsync(id);
         if (release == null)
         {
             return NotFound();
         }
-        _context.Releases.Remove(release);
-        await _context.SaveChangesAsync();
+        await _releaseService.Remove(release);
         return NoContent();
     }
 

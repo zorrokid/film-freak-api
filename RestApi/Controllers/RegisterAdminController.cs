@@ -1,10 +1,10 @@
 using FilmFreakApi.Auth;
-using FilmFreakApi.Models;
-using FilmFreakApi.Services;
+using FilmFreakApi.Auth.Models;
+using FilmFreakApi.Auth.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FilmFreakApi.Controllers;
+namespace FilmFreakApi.RestApi.Controllers;
 
 [Authorize(Roles = UserRoles.Admin)]
 [ApiController]

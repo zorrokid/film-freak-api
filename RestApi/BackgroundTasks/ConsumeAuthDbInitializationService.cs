@@ -1,3 +1,8 @@
+using FilmFreakApi.Auth.Options;
+using FilmFreakApi.Auth.Services;
+
+namespace FilmFreakApi.RestApi.BackgroundTasks;
+
 internal class ConsumeAuthDbInitializationService : BackgroundService
 {
     private readonly IServiceProvider _services;
@@ -14,7 +19,7 @@ internal class ConsumeAuthDbInitializationService : BackgroundService
 
     private async Task DoWork(CancellationToken stoppingToken)
     {
-        using(var scope = _services.CreateAsyncScope())
+        using (var scope = _services.CreateAsyncScope())
         {
             var authDbInitService = scope.ServiceProvider
                 .GetRequiredService<IAuthDbInitializationService>();
@@ -31,4 +36,4 @@ internal class ConsumeAuthDbInitializationService : BackgroundService
             await authDbInitService.Initialize(authOptions);
         }
     }
-} 
+}
