@@ -5,6 +5,7 @@ namespace FilmFreakApi.Application.Interfaces;
 public interface IReleaseRepository
 {
     Task<Release?> GetByExternalId(string externalId);
+    Task<IEnumerable<string>> GetExternalIdsAsync();
     Task Update(IEnumerable<Release> releases);
     Task Add(IEnumerable<Release> releases);
     Task AddAsync(Release release);

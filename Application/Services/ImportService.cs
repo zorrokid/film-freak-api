@@ -26,11 +26,13 @@ public class ImportService : IImportService
         var updatedItems = new List<Release>();
         var updatedIds = new List<string>();
         var addedIds = new List<string>();
+        var externalIds = await _repository.GetExternalIdsAsync();
         foreach (var importItem in importItems)
         {
-            var itemInDb = await _repository.GetByExternalId(importItem.ExternalId);
-            if (itemInDb != null)
+            if (externalIds.Contains(importItem.ExternalId))
             {
+                var itemInDb = await _repository.GetByExternalId(importItem.ExternalId);
+                if (itemInDb == null) throw new Exception($"Got null with external id {importItem.ExternalId}.");
                 _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
                 itemInDb.Barcode = importItem.Barcode;
                 itemInDb.Title = importItem.LocalName;

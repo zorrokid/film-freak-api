@@ -21,7 +21,7 @@ public class ReleaseRepository : IReleaseRepository
 
     public async Task Add(IEnumerable<Release> releases)
     {
-        await _context.Releases.AddRangeAsync();
+        await _context.Releases.AddRangeAsync(releases);
         await _context.SaveChangesAsync();
     }
 
@@ -51,5 +51,14 @@ public class ReleaseRepository : IReleaseRepository
     {
         _context.Releases.Remove(release);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<string>> GetExternalIdsAsync()
+    {
+        return await _context.Releases
+            .Where(r => r.ExternalId != null)
+            .Select(r => r.ExternalId!)
+            .Distinct()
+            .ToListAsync();
     }
 }
