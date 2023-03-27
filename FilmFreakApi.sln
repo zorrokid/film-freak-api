@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmFreakApi", "RestApi\FilmFreakApi.csproj", "{EF682D22-4DA3-4C58-84BA-B176AB69BC84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{8320F811-6E9B-4085-BBF4-57B764BD5B3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF682D22-4DA3-4C58-84BA-B176AB69BC84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF682D22-4DA3-4C58-84BA-B176AB69BC84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF682D22-4DA3-4C58-84BA-B176AB69BC84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF682D22-4DA3-4C58-84BA-B176AB69BC84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

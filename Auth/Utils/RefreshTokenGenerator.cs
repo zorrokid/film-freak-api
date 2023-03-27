@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 
+namespace FilmFreakApi.Auth.Utils;
+
 public static class RefreshTokenGenerator
 {
     public static string Generate()
