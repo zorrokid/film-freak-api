@@ -75,6 +75,7 @@ public class ReleaseController : ControllerBase
     {
         Id = release.Id,
         Title = release.Title,
-        Barcode = release.Barcode
+        Barcode = release.Barcode,
+        ExternalId = release.ExternalId
     };
 }

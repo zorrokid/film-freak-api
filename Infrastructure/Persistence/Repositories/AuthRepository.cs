@@ -1,9 +1,8 @@
 using FilmFreakApi.Auth.Entities;
 using FilmFreakApi.Auth.Interfaces;
-using FilmFreakApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FilmFreakApi.Infrasturcture.Persistence.Repositories;
+namespace FilmFreakApi.Infrastructure.Persistence.Repositories;
 
 public class AuthRepository : IAuthRepository
 {

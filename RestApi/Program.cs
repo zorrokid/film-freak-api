@@ -10,6 +10,8 @@ using FilmFreakApi.Auth.Options;
 using FilmFreakApi.RestApi.BackgroundTasks;
 using FilmFreakApi.Application.Interfaces;
 using FilmFreakApi.Infrastructure.Persistence.Repositories;
+using FilmFreakApi.Application.Services;
+using FilmFreakApi.Auth.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,6 +127,10 @@ builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReleaseRepository, ReleaseRepository>();
+builder.Services.AddScoped<IImportService, ImportService>();
+builder.Services.AddScoped<IReleaseService, ReleaseService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
 
 var app = builder.Build();
 
