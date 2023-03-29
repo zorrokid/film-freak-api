@@ -3,9 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmFreakApi", "RestApi\FilmFreakApi.csproj", "{EF682D22-4DA3-4C58-84BA-B176AB69BC84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi", "RestApi\RestApi.csproj", "{EF682D22-4DA3-4C58-84BA-B176AB69BC84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{8320F811-6E9B-4085-BBF4-57B764BD5B3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{6B5C9380-1747-4E50-8D78-0B69B2DCB742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{7AEC5E90-3E63-444F-BF86-35A3DB302C68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C40A0A3F-6AAF-460F-A880-A0AA97E97F5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{D95180EC-3C1C-469D-B8CC-F66ABAA5332C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +32,21 @@ Global
 		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8320F811-6E9B-4085-BBF4-57B764BD5B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B5C9380-1747-4E50-8D78-0B69B2DCB742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B5C9380-1747-4E50-8D78-0B69B2DCB742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B5C9380-1747-4E50-8D78-0B69B2DCB742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B5C9380-1747-4E50-8D78-0B69B2DCB742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AEC5E90-3E63-444F-BF86-35A3DB302C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AEC5E90-3E63-444F-BF86-35A3DB302C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AEC5E90-3E63-444F-BF86-35A3DB302C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AEC5E90-3E63-444F-BF86-35A3DB302C68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C40A0A3F-6AAF-460F-A880-A0AA97E97F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C40A0A3F-6AAF-460F-A880-A0AA97E97F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C40A0A3F-6AAF-460F-A880-A0AA97E97F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C40A0A3F-6AAF-460F-A880-A0AA97E97F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D95180EC-3C1C-469D-B8CC-F66ABAA5332C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D95180EC-3C1C-469D-B8CC-F66ABAA5332C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D95180EC-3C1C-469D-B8CC-F66ABAA5332C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D95180EC-3C1C-469D-B8CC-F66ABAA5332C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
