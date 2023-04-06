@@ -35,7 +35,7 @@ public class ImportService : IImportService
                 if (itemInDb == null) throw new Exception($"Got null with external id {importItem.ExternalId}.");
                 _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
                 itemInDb.Barcode = importItem.Barcode;
-                itemInDb.Title = importItem.LocalName;
+                itemInDb.Name = importItem.LocalName;
                 updatedItems.Add(itemInDb);
                 updatedIds.Add(importItem.ExternalId);
             }
@@ -46,7 +46,7 @@ public class ImportService : IImportService
                 {
                     Barcode = importItem.Barcode,
                     ExternalId = importItem.ExternalId,
-                    Title = importItem.LocalName
+                    Name = importItem.LocalName
                 });
                 addedIds.Add(importItem.ExternalId);
             }

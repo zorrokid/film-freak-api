@@ -2,17 +2,20 @@
 using FilmFreakApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FilmFreakApi.Infrastructure.Persistence.Migrations.FilmFreakDb
+namespace Infrastructure.Infrastructure.Persistence.Migrations.FilmFreakDb
 {
     [DbContext(typeof(FilmFreakContext))]
-    partial class FilmFreakContextModelSnapshot : ModelSnapshot
+    [Migration("20230406184923_RenameReleaseTitleToName")]
+    partial class RenameReleaseTitleToName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

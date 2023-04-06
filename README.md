@@ -7,7 +7,7 @@
 
 ## Create and populate app settings
 
-Create and populate `appsettings.Development.json` based from copy of `appsettings.json`.
+Create and populate `appsettings.Development.json` based from copy of `appsettings.Template.json`.
 
 ```json
   "Database": {
@@ -58,13 +58,12 @@ For use in Docker-container for development environment reference these files in
 
 ## Run in development environment
 
-
-
 ## Build Docker image
 
 ```bash
 docker build -t filmfreakapi .
 ```
+
 ## Run API from container
 
 ```bash
@@ -85,21 +84,23 @@ https://localhost:5054/swagger/index.html
 
 ## AuthDb
 
-Create migration:
+To create migration, from solution root run:
 
-    dotnet ef migrations add --context AuthDbContext "<migration name>" --output-dir "Migrations/AuthDb"
+   dotnet ef migrations add --context AuthDbContext <migration name> --project Infrastructure --startup-project RestApi --output-dir "Infrastructure/Persistence/Migrations/AuthDb"
 
-Update database:
+To update database, from the solution root run:
 
-    dotnet ef database update --context AuthDbContext
+  dotnet ef database update --context AuthDbContext --project RestApi
 
 ## FilmFreakDb
 
-    dotnet ef migrations add --context FilmFreakContext "<migration name>" --output-dir "Migrations/FilmFreakDb"
+To create migration, from the solution root run:
 
-Update database:
+  dotnet ef migrations add --context FilmFreakContext <migration name> --project Infrastructure --startup-project RestApi --output-dir "Infrastructure/Persistence/Migrations/FilmFreakDb"
 
-    dotnet ef database update --context FilmFreakContext
+To update database, from the solution root run:
+
+  dotnet ef database update --context FilmFreakContext --project RestApi
 
 
 

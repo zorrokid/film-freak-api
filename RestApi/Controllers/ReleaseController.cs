@@ -74,7 +74,7 @@ public class ReleaseController : ControllerBase
     private ReleaseDTO ReleaseToDTO(Release release) => new ReleaseDTO
     {
         Id = release.Id,
-        Title = release.Title,
+        Title = release.Name,
         Barcode = release.Barcode,
         ExternalId = release.ExternalId
     };
