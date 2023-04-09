@@ -86,7 +86,7 @@ https://localhost:5054/swagger/index.html
 
 To create migration, from solution root run:
 
-   dotnet ef migrations add --context AuthDbContext <migration name> --project Infrastructure --startup-project RestApi --output-dir "Infrastructure/Persistence/Migrations/AuthDb"
+   dotnet ef migrations add --context AuthDbContext <migration name> --project Infrastructure --startup-project RestApi --output-dir Infrastructure/Persistence/Migrations/AuthDb
 
 To update database, from the solution root run:
 
@@ -96,7 +96,7 @@ To update database, from the solution root run:
 
 To create migration, from the solution root run:
 
-  dotnet ef migrations add --context FilmFreakContext <migration name> --project Infrastructure --startup-project RestApi --output-dir "Infrastructure/Persistence/Migrations/FilmFreakDb"
+  dotnet ef migrations add --context FilmFreakContext <migration name> --project Infrastructure --startup-project RestApi --output-dir Infrastructure/Persistence/Migrations/FilmFreakDb
 
 To update database, from the solution root run:
 
