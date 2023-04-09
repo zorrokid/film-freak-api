@@ -102,5 +102,6 @@ To update database, from the solution root run:
 
   dotnet ef database update --context FilmFreakContext --project RestApi
 
+To move databse to certain migration
 
-
+  dotnet ef database update <migration name> --context FilmFreakContext --project RestApi
