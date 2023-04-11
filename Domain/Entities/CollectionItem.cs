@@ -20,14 +20,11 @@ public enum CollectionStatus
     Owned
 }
 
-public class CollectionItem
+public class CollectionItem : EntityBase
 {
-    public long Id { get; set; }
     public long ReleaseId { get; set; }
     public Condition Condition { get; set; }
     public CollectionStatus CollectionStatus { get; set; }
-    public DateTime CreatedTime { get; set; }
-    public DateTime ModifiedTime { get; set; }
     public Release Release { get; set; } = null!;
     public string? ExternalId { get; set; }
     public string UserId { get; set; } = null!;
