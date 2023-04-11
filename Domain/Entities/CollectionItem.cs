@@ -28,4 +28,6 @@ public class CollectionItem
     public CollectionStatus CollectionStatus { get; set; }
     public DateTime CreatedTime { get; set; }
     public DateTime ModifiedTime { get; set; }
+    public Release Release { get; set; } = null!;
+    public string? ExternalId { get; set; }
 }
