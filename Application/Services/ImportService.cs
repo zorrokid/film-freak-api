@@ -64,6 +64,8 @@ public class ImportService : IImportService
                     ExternalId = importItem.ExternalId,
                     Name = importItem.LocalName,
                     CreatedTime = modificationTime,
+                    UserId = userId,
+                    IsShared = false,
                 };
 
                 release.CollectionItems.Add(new CollectionItem
@@ -72,6 +74,7 @@ public class ImportService : IImportService
                     // TODO set fields from import model
                     CollectionStatus = CollectionStatus.Unknown,
                     Condition = Condition.Unknown,
+                    UserId = userId,
                 });
 
                 newItems.Add(release);

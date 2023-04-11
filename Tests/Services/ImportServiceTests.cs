@@ -56,7 +56,7 @@ public class ImportServiceTests
             .Setup((r) => r.GetByExternalId(expectedAddId, "").Result)
                 .Returns(release);
         var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
-        var result = await _ImportService.DoImportAsync(items, "");
+        var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.addedItems.Count() == 0);
         Assert.True(result.updatedItems.Count() == 1);
         Assert.True(result.updatedItems.First() == expectedAddId);
