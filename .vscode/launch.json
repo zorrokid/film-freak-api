@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/RestApi/bin/Debug/net7.0/FilmFreakApi.dll",
+            "program": "${workspaceFolder}/RestApi/bin/Debug/net7.0/RestApi.dll",
             "args": [],
             "cwd": "${workspaceFolder}/RestApi",
             "stopAtEntry": false,
