@@ -13,6 +13,8 @@ public class ImportServiceTests
     private readonly Mock<ILogger<ImportService>> _loggerMock;
     private readonly IImportService _ImportService;
 
+    private readonly string _userId = "userId";
+
     public ImportServiceTests()
     {
         _releaseRepositoryMock = new Mock<IReleaseRepository>();
@@ -24,7 +26,7 @@ public class ImportServiceTests
     public async Task DoImportAsync_EmptyInputList_EmptyResultLists()
     {
         var items = new ImportItem[] { };
-        var result = await _ImportService.DoImportAsync(items);
+        var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.addedItems != null);
         Assert.True(result.updatedItems != null);
         Assert.True(result.addedItems.Count() == 0);
@@ -36,10 +38,10 @@ public class ImportServiceTests
     {
         var expectedAddId = "123-abc";
         _releaseRepositoryMock
-            .Setup((r) => r.GetByExternalId(expectedAddId).Result)
+            .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
             .Returns((Release?)null);
         var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
-        var result = await _ImportService.DoImportAsync(items);
+        var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.updatedItems.Count() == 0);
         Assert.True(result.addedItems.Count() == 1);
         Assert.True(result.addedItems.First() == expectedAddId);
@@ -51,10 +53,10 @@ public class ImportServiceTests
         var expectedAddId = "123-abc";
         var release = new Release { ExternalId = expectedAddId };
         _releaseRepositoryMock
-            .Setup((r) => r.GetByExternalId(expectedAddId).Result)
+            .Setup((r) => r.GetByExternalId(expectedAddId, "").Result)
                 .Returns(release);
         var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
-        var result = await _ImportService.DoImportAsync(items);
+        var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.addedItems.Count() == 0);
         Assert.True(result.updatedItems.Count() == 1);
         Assert.True(result.updatedItems.First() == expectedAddId);

@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- .net 7.0 SDK
+- .net 7.x SDK
 - PostgreSQL-server
 
 ## Create and populate app settings
@@ -58,6 +58,12 @@ For use in Docker-container for development environment reference these files in
 
 ## Run in development environment
 
+In root folder run:
+
+```bash
+dotnet run
+```
+
 ## Build Docker image
 
 ```bash
@@ -86,7 +92,7 @@ https://localhost:5054/swagger/index.html
 
 To create migration, from solution root run:
 
-   dotnet ef migrations add --context AuthDbContext <migration name> --project Infrastructure --startup-project RestApi --output-dir "Infrastructure/Persistence/Migrations/AuthDb"
+   dotnet ef migrations add --context AuthDbContext <migration name> --project Infrastructure --startup-project RestApi --output-dir Infrastructure/Persistence/Migrations/AuthDb
 
 To update database, from the solution root run:
 
@@ -96,11 +102,34 @@ To update database, from the solution root run:
 
 To create migration, from the solution root run:
 
-  dotnet ef migrations add --context FilmFreakContext <migration name> --project Infrastructure --startup-project RestApi --output-dir "Infrastructure/Persistence/Migrations/FilmFreakDb"
+  dotnet ef migrations add --context FilmFreakContext <migration name> --project Infrastructure --startup-project RestApi --output-dir Infrastructure/Persistence/Migrations/FilmFreakDb
 
 To update database, from the solution root run:
 
   dotnet ef database update --context FilmFreakContext --project RestApi
 
+To move databse to certain migration
 
+  dotnet ef database update <migration name> --context FilmFreakContext --project RestApi
+
+## Data model
+
+- A release is certain publification, a movie or collection of movies, a TV-series or a a season of TV-series as a single publification or a _release_
+
+**TODO**: maybe release should be renamed to publification
+
+- A collection item is always based on a release - it has always a Release relation
+
+- Releases can have ownership 
+  - they're only visible for the owner
+  - only owner can modify the release
+
+- Releases can be promoted for shared common use (IsShared flag)
+  - the ownership is not cleared but the original owner cannot modify the data directly
+  - promoted release is visible to other users 
+  - also other users can suggest modifications
+
+- Collection items have ownership
+  - they're visible only for the owner unless owner sets a public visibility
+  - only owner can modify the collection item 
 

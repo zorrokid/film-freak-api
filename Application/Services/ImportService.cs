@@ -20,34 +20,64 @@ public class ImportService : IImportService
     }
 
     public async Task<(List<string> addedItems, List<string> updatedItems)>
-        DoImportAsync(ImportItem[] importItems)
+        DoImportAsync(ImportItem[] importItems, string userId)
     {
         var newItems = new List<Release>();
         var updatedItems = new List<Release>();
         var updatedIds = new List<string>();
         var addedIds = new List<string>();
-        var externalIds = await _repository.GetExternalIdsAsync();
+        var externalIds = await _repository.GetExternalIdsAsync(userId);
+        // set the same modification time for the whole batch
+        var modificationTime = DateTime.UtcNow;
         foreach (var importItem in importItems)
         {
             if (externalIds.Contains(importItem.ExternalId))
             {
-                var itemInDb = await _repository.GetByExternalId(importItem.ExternalId);
+                // note: import updates only releases with ownership 
+                var itemInDb = await _repository.GetByExternalId(importItem.ExternalId, userId);
                 if (itemInDb == null) throw new Exception($"Got null with external id {importItem.ExternalId}.");
                 _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
                 itemInDb.Barcode = importItem.Barcode;
                 itemInDb.Name = importItem.LocalName;
+                itemInDb.ModifiedTime = modificationTime;
+                // update also collection item created by import
+                var collectionItem = itemInDb.CollectionItems
+                    .SingleOrDefault(ci => ci.ExternalId == importItem.ExternalId && ci.UserId == userId);
+
+                if (collectionItem != null)
+                {
+                    // TODO update collection item properties 
+                    collectionItem.Condition = Condition.Unknown;
+                    collectionItem.CollectionStatus = CollectionStatus.Unknown;
+                    collectionItem.ModifiedTime = modificationTime;
+                }
+
                 updatedItems.Add(itemInDb);
                 updatedIds.Add(importItem.ExternalId);
             }
             else
             {
                 _logger.LogInformation("Adding release with externalId {externalId}", importItem.ExternalId);
-                newItems.Add(new Release
+                var release = new Release
                 {
                     Barcode = importItem.Barcode,
                     ExternalId = importItem.ExternalId,
-                    Name = importItem.LocalName
+                    Name = importItem.LocalName,
+                    CreatedTime = modificationTime,
+                    UserId = userId,
+                    IsShared = false,
+                };
+
+                release.CollectionItems.Add(new CollectionItem
+                {
+                    CreatedTime = modificationTime,
+                    // TODO set fields from import model
+                    CollectionStatus = CollectionStatus.Unknown,
+                    Condition = Condition.Unknown,
+                    UserId = userId,
                 });
+
+                newItems.Add(release);
                 addedIds.Add(importItem.ExternalId);
             }
         }

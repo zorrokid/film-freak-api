@@ -3,17 +3,20 @@ using System;
 using FilmFreakApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FilmFreakApi.Infrastructure.Persistence.Migrations.FilmFreakDb
+namespace Infrastructure.Infrastructure.Persistence.Migrations.FilmFreakDb
 {
     [DbContext(typeof(FilmFreakContext))]
-    partial class FilmFreakContextModelSnapshot : ModelSnapshot
+    [Migration("20230409220042_AddCollectionItem")]
+    partial class AddCollectionItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,22 +42,13 @@ namespace FilmFreakApi.Infrastructure.Persistence.Migrations.FilmFreakDb
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ExternalId")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<long>("ReleaseId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ReleaseId");
 
                     b.ToTable("CollectionItems");
                 });
@@ -70,43 +64,15 @@ namespace FilmFreakApi.Infrastructure.Persistence.Migrations.FilmFreakDb
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("ExternalId")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsShared")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("ModifiedTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Releases");
-                });
-
-            modelBuilder.Entity("FilmFreakApi.Domain.Entities.CollectionItem", b =>
-                {
-                    b.HasOne("FilmFreakApi.Domain.Entities.Release", "Release")
-                        .WithMany("CollectionItems")
-                        .HasForeignKey("ReleaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Release");
-                });
-
-            modelBuilder.Entity("FilmFreakApi.Domain.Entities.Release", b =>
-                {
-                    b.Navigation("CollectionItems");
                 });
 #pragma warning restore 612, 618
         }

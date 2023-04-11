@@ -9,4 +9,5 @@ public class FilmFreakContext : DbContext
         : base(options) { }
 
     public required DbSet<Release> Releases { get; set; }
+    public required DbSet<CollectionItem> CollectionItems { get; set; }
 }
