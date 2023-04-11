@@ -6,5 +6,6 @@ public class Release
     public string? Name { get; set; }
     public string? Barcode { get; set; }
     public string? ExternalId { get; set; }
+    public bool IsShared { get; set; }
     public ICollection<CollectionItem> CollectionItems { get; } = new List<CollectionItem>();
 }
