@@ -30,4 +30,5 @@ public class CollectionItem
     public DateTime ModifiedTime { get; set; }
     public Release Release { get; set; } = null!;
     public string? ExternalId { get; set; }
+    public string UserId { get; set; } = null!;
 }

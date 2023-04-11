@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FilmFreakApi.Application.Interfaces;
 using FilmFreakApi.Application.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,9 @@ public class ImportController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ImportFromFile(ImportItem[] importItems)
     {
-        var result = await _importService.DoImportAsync(importItems);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) throw new Exception("userId cannot be null.");
+        var result = await _importService.DoImportAsync(importItems, userId);
         return Ok(new
         {
             AddedIds = result.addedItems,

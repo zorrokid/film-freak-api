@@ -20,22 +20,26 @@ public class ImportService : IImportService
     }
 
     public async Task<(List<string> addedItems, List<string> updatedItems)>
-        DoImportAsync(ImportItem[] importItems)
+        DoImportAsync(ImportItem[] importItems, string userId)
     {
         var newItems = new List<Release>();
         var updatedItems = new List<Release>();
         var updatedIds = new List<string>();
         var addedIds = new List<string>();
-        var externalIds = await _repository.GetExternalIdsAsync();
+        var externalIds = await _repository.GetExternalIdsAsync(userId);
         foreach (var importItem in importItems)
         {
             if (externalIds.Contains(importItem.ExternalId))
             {
-                var itemInDb = await _repository.GetByExternalId(importItem.ExternalId);
+                // note: import updates only releases with ownership 
+                var itemInDb = await _repository.GetByExternalId(importItem.ExternalId, userId);
                 if (itemInDb == null) throw new Exception($"Got null with external id {importItem.ExternalId}.");
                 _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
                 itemInDb.Barcode = importItem.Barcode;
                 itemInDb.Name = importItem.LocalName;
+                // update also collection item created by import
+                // collection item's have ownership
+                var collectionItem = itemInDb.CollectionItems.SingleOrDefault(ci => ci.ExternalId == importItem.ExternalId);
                 updatedItems.Add(itemInDb);
                 updatedIds.Add(importItem.ExternalId);
             }
@@ -46,7 +50,7 @@ public class ImportService : IImportService
                 {
                     Barcode = importItem.Barcode,
                     ExternalId = importItem.ExternalId,
-                    Name = importItem.LocalName
+                    Name = importItem.LocalName,
                 });
                 addedIds.Add(importItem.ExternalId);
             }

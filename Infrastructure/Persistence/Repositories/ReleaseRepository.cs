@@ -13,10 +13,10 @@ public class ReleaseRepository : IReleaseRepository
         _context = context;
     }
 
-    public async Task<Release?> GetByExternalId(string externalId)
+    public async Task<Release?> GetByExternalId(string externalId, string userId)
     {
         return await _context.Releases
-            .FirstOrDefaultAsync(r => r.ExternalId == externalId);
+            .FirstOrDefaultAsync(r => r.ExternalId == externalId && r.UserId == userId);
     }
 
     public async Task Add(IEnumerable<Release> releases)
@@ -53,10 +53,10 @@ public class ReleaseRepository : IReleaseRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<string>> GetExternalIdsAsync()
+    public async Task<IEnumerable<string>> GetExternalIdsAsync(string userId)
     {
         return await _context.Releases
-            .Where(r => r.ExternalId != null)
+            .Where(r => r.UserId == userId && r.ExternalId != null)
             .Select(r => r.ExternalId!)
             .Distinct()
             .ToListAsync();
