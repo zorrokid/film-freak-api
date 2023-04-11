@@ -27,6 +27,8 @@ public class ImportService : IImportService
         var updatedIds = new List<string>();
         var addedIds = new List<string>();
         var externalIds = await _repository.GetExternalIdsAsync(userId);
+        // set the same modification time for the whole batch
+        var modificationTime = DateTime.UtcNow;
         foreach (var importItem in importItems)
         {
             if (externalIds.Contains(importItem.ExternalId))
@@ -37,21 +39,42 @@ public class ImportService : IImportService
                 _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
                 itemInDb.Barcode = importItem.Barcode;
                 itemInDb.Name = importItem.LocalName;
+                itemInDb.ModifiedTime = modificationTime;
                 // update also collection item created by import
-                // collection item's have ownership
-                var collectionItem = itemInDb.CollectionItems.SingleOrDefault(ci => ci.ExternalId == importItem.ExternalId);
+                var collectionItem = itemInDb.CollectionItems
+                    .SingleOrDefault(ci => ci.ExternalId == importItem.ExternalId && ci.UserId == userId);
+
+                if (collectionItem != null)
+                {
+                    // TODO update collection item properties 
+                    collectionItem.Condition = Condition.Unknown;
+                    collectionItem.CollectionStatus = CollectionStatus.Unknown;
+                    collectionItem.ModifiedTime = modificationTime;
+                }
+
                 updatedItems.Add(itemInDb);
                 updatedIds.Add(importItem.ExternalId);
             }
             else
             {
                 _logger.LogInformation("Adding release with externalId {externalId}", importItem.ExternalId);
-                newItems.Add(new Release
+                var release = new Release
                 {
                     Barcode = importItem.Barcode,
                     ExternalId = importItem.ExternalId,
                     Name = importItem.LocalName,
+                    CreatedTime = modificationTime,
+                };
+
+                release.CollectionItems.Add(new CollectionItem
+                {
+                    CreatedTime = modificationTime,
+                    // TODO set fields from import model
+                    CollectionStatus = CollectionStatus.Unknown,
+                    Condition = Condition.Unknown,
                 });
+
+                newItems.Add(release);
                 addedIds.Add(importItem.ExternalId);
             }
         }
