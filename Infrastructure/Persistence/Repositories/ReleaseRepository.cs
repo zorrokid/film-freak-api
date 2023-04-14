@@ -18,8 +18,7 @@ public class ReleaseRepository : IReleaseRepository
         return await _context.Releases
             .FirstOrDefaultAsync(r =>
                 r.ExternalId == externalId &&
-                r.UserId == userId &&
-                !r.IsShared);
+                r.UserId == userId);
     }
 
     public async Task Add(IEnumerable<Release> releases)
@@ -59,7 +58,7 @@ public class ReleaseRepository : IReleaseRepository
     public async Task<IEnumerable<string>> GetExternalIdsAsync(string userId)
     {
         return await _context.Releases
-            .Where(r => r.UserId == userId && r.ExternalId != null && !r.IsShared)
+            .Where(r => r.UserId == userId && r.ExternalId != null)
             .Select(r => r.ExternalId!)
             .Distinct()
             .ToListAsync();

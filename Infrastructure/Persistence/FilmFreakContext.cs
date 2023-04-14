@@ -8,6 +8,6 @@ public class FilmFreakContext : DbContext
     public FilmFreakContext(DbContextOptions<FilmFreakContext> options)
         : base(options) { }
 
-    public required DbSet<Release> Releases { get; set; }
-    public required DbSet<CollectionItem> CollectionItems { get; set; }
+    public DbSet<Release> Releases => Set<Release>();
+    public DbSet<CollectionItem> CollectionItems => Set<CollectionItem>();
 }

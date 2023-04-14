@@ -48,17 +48,38 @@ public class ImportServiceTests
     }
 
     [Fact]
-    public async Task DoImportAsync_UpdatedImportItem_IdInUpdatedList()
+    public async Task DoImportAsync_ItemAlreadyImported_IdInUpdatedList()
     {
         var expectedAddId = "123-abc";
-        var release = new Release { ExternalId = expectedAddId };
+        var release = new Release { ExternalId = expectedAddId, UserId = _userId, IsShared = false };
         _releaseRepositoryMock
-            .Setup((r) => r.GetByExternalId(expectedAddId, "").Result)
-                .Returns(release);
+            .Setup((r) => r.GetExternalIdsAsync(_userId).Result)
+                .Returns(new List<string>() { expectedAddId });
+        _releaseRepositoryMock
+           .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
+               .Returns(release);
         var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
         var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.addedItems.Count() == 0);
         Assert.True(result.updatedItems.Count() == 1);
         Assert.True(result.updatedItems.First() == expectedAddId);
+    }
+
+    [Fact]
+    public async Task DoImportAsync_AnotherUserHasReleaseWithSameExternalId_IdInAddedListUpdatedListEmpty()
+    {
+        var expectedAddId = "123-abc";
+        var anotherUserId = "anotherUserId";
+        var release = new Release { ExternalId = expectedAddId, UserId = anotherUserId };
+        _releaseRepositoryMock
+            .Setup((r) => r.GetExternalIdsAsync(_userId).Result)
+                .Returns(new List<string>());
+        _releaseRepositoryMock
+           .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
+               .Returns((Release?)null);
+        var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
+        var result = await _ImportService.DoImportAsync(items, _userId);
+        Assert.True(result.addedItems.Count() == 1);
+        Assert.True(result.updatedItems.Count() == 0);
     }
 }
