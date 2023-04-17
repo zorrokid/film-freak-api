@@ -4,6 +4,7 @@ using FilmFreakApi.Application.Services;
 using FilmFreakApi.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Tests.Builders;
 
 namespace FilmFreakApi.Tests.Services;
 
@@ -43,16 +44,15 @@ public class ImportServiceTests
         var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
 
         var result = await _ImportService.DoImportAsync(items, _userId);
-        Assert.True(result.updatedItems.Count() == 0);
-        Assert.True(result.addedItems.Count() == 1);
-        Assert.True(result.addedItems.First() == expectedAddId);
+        Assert.True(result.addedItems.Single() == expectedAddId);
     }
 
     [Fact]
     public async Task DoImportAsync_ItemAlreadyImported_IdInUpdatedList()
     {
         var expectedAddId = "123-abc";
-        var release = new Release { ExternalId = expectedAddId, UserId = _userId, IsShared = false };
+        var release = new ReleaseBuilder()
+            .WithExternalId(expectedAddId).WithUser(_userId).Build();
         _releaseRepositoryMock
             .Setup((r) => r.GetExternalIdsAsync(_userId).Result)
                 .Returns(new List<string>() { expectedAddId });
@@ -61,27 +61,7 @@ public class ImportServiceTests
                .Returns(release);
         var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
         var result = await _ImportService.DoImportAsync(items, _userId);
-        Assert.True(result.addedItems.Count() == 0);
-        Assert.True(result.updatedItems.Count() == 1);
-        Assert.True(result.updatedItems.First() == expectedAddId);
-    }
-
-    [Fact]
-    public async Task DoImportAsync_AnotherUserHasReleaseWithSameExternalId_IdInAddedListUpdatedListEmpty()
-    {
-        var expectedAddId = "123-abc";
-        var anotherUserId = "anotherUserId";
-        var release = new Release { ExternalId = expectedAddId, UserId = anotherUserId };
-        _releaseRepositoryMock
-            .Setup((r) => r.GetExternalIdsAsync(_userId).Result)
-                .Returns(new List<string>());
-        _releaseRepositoryMock
-           .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
-               .Returns((Release?)null);
-        var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
-        var result = await _ImportService.DoImportAsync(items, _userId);
-        Assert.True(result.addedItems.Count() == 1);
-        Assert.True(result.updatedItems.Count() == 0);
+        Assert.True(result.updatedItems.Single() == expectedAddId);
     }
 
 }

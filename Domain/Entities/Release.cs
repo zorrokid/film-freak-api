@@ -7,5 +7,7 @@ public class Release : EntityBase
     public string? ExternalId { get; set; }
     public bool IsShared { get; set; }
     public string? UserId { get; set; }
-    public ICollection<CollectionItem> CollectionItems { get; } = new List<CollectionItem>();
+
+    public ICollection<CollectionItem> CollectionItems { get; set; }
+        = new List<CollectionItem>();
 }
