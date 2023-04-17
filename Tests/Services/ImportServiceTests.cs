@@ -40,7 +40,8 @@ public class ImportServiceTests
         _releaseRepositoryMock
             .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
             .Returns((Release?)null);
-        var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
+        var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
+
         var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.updatedItems.Count() == 0);
         Assert.True(result.addedItems.Count() == 1);
@@ -58,7 +59,7 @@ public class ImportServiceTests
         _releaseRepositoryMock
            .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
                .Returns(release);
-        var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
+        var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
         var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.addedItems.Count() == 0);
         Assert.True(result.updatedItems.Count() == 1);
@@ -77,9 +78,10 @@ public class ImportServiceTests
         _releaseRepositoryMock
            .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
                .Returns((Release?)null);
-        var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
+        var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
         var result = await _ImportService.DoImportAsync(items, _userId);
         Assert.True(result.addedItems.Count() == 1);
         Assert.True(result.updatedItems.Count() == 0);
     }
+
 }
