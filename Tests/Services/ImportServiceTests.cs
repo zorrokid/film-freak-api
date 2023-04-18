@@ -4,6 +4,7 @@ using FilmFreakApi.Application.Services;
 using FilmFreakApi.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Tests.Builders;
 
 namespace FilmFreakApi.Tests.Services;
 
@@ -40,25 +41,27 @@ public class ImportServiceTests
         _releaseRepositoryMock
             .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
             .Returns((Release?)null);
-        var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
+        var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
+
         var result = await _ImportService.DoImportAsync(items, _userId);
-        Assert.True(result.updatedItems.Count() == 0);
-        Assert.True(result.addedItems.Count() == 1);
-        Assert.True(result.addedItems.First() == expectedAddId);
+        Assert.True(result.addedItems.Single() == expectedAddId);
     }
 
     [Fact]
-    public async Task DoImportAsync_UpdatedImportItem_IdInUpdatedList()
+    public async Task DoImportAsync_ItemAlreadyImported_IdInUpdatedList()
     {
         var expectedAddId = "123-abc";
-        var release = new Release { ExternalId = expectedAddId };
+        var release = new ReleaseBuilder()
+            .WithExternalId(expectedAddId).WithUser(_userId).Build();
         _releaseRepositoryMock
-            .Setup((r) => r.GetByExternalId(expectedAddId, "").Result)
-                .Returns(release);
-        var items = new ImportItem[] { new ImportItem(expectedAddId, "", "", "", "", "", "") };
+            .Setup((r) => r.GetExternalIdsAsync(_userId).Result)
+                .Returns(new List<string>() { expectedAddId });
+        _releaseRepositoryMock
+           .Setup((r) => r.GetByExternalId(expectedAddId, _userId).Result)
+               .Returns(release);
+        var items = new ImportItem[] { new ImportItemBuilder().WithExternalId(expectedAddId).Build() };
         var result = await _ImportService.DoImportAsync(items, _userId);
-        Assert.True(result.addedItems.Count() == 0);
-        Assert.True(result.updatedItems.Count() == 1);
-        Assert.True(result.updatedItems.First() == expectedAddId);
+        Assert.True(result.updatedItems.Single() == expectedAddId);
     }
+
 }

@@ -33,19 +33,28 @@ public class ImportService : IImportService
         {
             if (externalIds.Contains(importItem.ExternalId))
             {
-                // note: import updates only releases with ownership 
                 var itemInDb = await _repository.GetByExternalId(importItem.ExternalId, userId);
                 if (itemInDb == null) throw new Exception($"Got null with external id {importItem.ExternalId}.");
-                _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
-                itemInDb.Barcode = importItem.Barcode;
-                itemInDb.Name = importItem.LocalName;
-                itemInDb.ModifiedTime = modificationTime;
+                if (itemInDb.IsShared == false)
+                {
+                    _logger.LogInformation("Updating release with externalId {externalId}", importItem.ExternalId);
+                    // update release only when it's not shared
+                    itemInDb.Barcode = importItem.Barcode;
+                    itemInDb.Name = importItem.LocalName;
+                    itemInDb.ModifiedTime = modificationTime;
+                }
+                else
+                {
+                    _logger.LogWarning("Release has IsShared-status and will not be updated.");
+                }
+
                 // update also collection item created by import
                 var collectionItem = itemInDb.CollectionItems
                     .SingleOrDefault(ci => ci.ExternalId == importItem.ExternalId && ci.UserId == userId);
 
                 if (collectionItem != null)
                 {
+                    _logger.LogInformation("Updating collection item with externalId {externalId}", importItem.ExternalId);
                     // TODO update collection item properties 
                     collectionItem.Condition = Condition.Unknown;
                     collectionItem.CollectionStatus = CollectionStatus.Unknown;
