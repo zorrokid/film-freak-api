@@ -12,10 +12,13 @@ namespace FilmFreakApi.RestApi.Controllers;
 public class ReleaseController : ControllerBase
 {
     private readonly IReleaseService _releaseService;
+    private readonly IFileUploadService _fileUploadService;
 
-    public ReleaseController(IReleaseService releaseService)
+    public ReleaseController(IReleaseService releaseService,
+        IFileUploadService fileUploadService)
     {
         _releaseService = releaseService;
+        _fileUploadService = fileUploadService;
     }
 
     [HttpPost]
@@ -70,6 +73,18 @@ public class ReleaseController : ControllerBase
         await _releaseService.Remove(release);
         return NoContent();
     }
+
+    [HttpPost("{id}/files")]
+    public async Task<string> UploadFile(IFormFile file)
+    {
+        var fileId = await _fileUploadService.StoreFile(file.OpenReadStream());
+
+        // TODO: store file for release in db (fileId) 
+
+        // TODO: return the file id
+        return fileId;
+    }
+
 
     private ReleaseDTO ReleaseToDTO(Release release) => new ReleaseDTO
     {
