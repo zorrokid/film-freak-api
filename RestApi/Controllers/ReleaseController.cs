@@ -3,6 +3,7 @@ using FilmFreakApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using FilmFreakApi.Application.Interfaces;
 using FilmFreakApi.Domain.Entities;
+using FilmFreakApi.RestApi.Validators;
 
 namespace FilmFreakApi.RestApi.Controllers;
 
@@ -13,12 +14,15 @@ public class ReleaseController : ControllerBase
 {
     private readonly IReleaseService _releaseService;
     private readonly IFileUploadService _fileUploadService;
+    private readonly IFileValidator _fileValidator;
 
     public ReleaseController(IReleaseService releaseService,
-        IFileUploadService fileUploadService)
+        IFileUploadService fileUploadService,
+        IFileValidator fileValidator)
     {
         _releaseService = releaseService;
         _fileUploadService = fileUploadService;
+        _fileValidator = fileValidator;
     }
 
     [HttpPost]
@@ -77,6 +81,7 @@ public class ReleaseController : ControllerBase
     [HttpPost("{id}/files")]
     public async Task<string> UploadFile(IFormFile file)
     {
+        _fileValidator.Validate(file);
         var fileId = await _fileUploadService.StoreFile(file.OpenReadStream());
 
         // TODO: store file for release in db (fileId) 
