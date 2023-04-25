@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace FilmFreakApi.RestApi.Validators;
 
 [Serializable]
-internal class FileValidationException : Exception
+public class FileValidationException : Exception
 {
     public FileValidationException()
     {
