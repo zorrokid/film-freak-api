@@ -7,17 +7,17 @@ public enum FileUploadType
 
 public static class FileValidationSpecsBuilder
 {
-    private static Dictionary<FileUploadType, string> _contentTypes = new Dictionary<FileUploadType, string>
+    private static readonly Dictionary<FileUploadType, string> _contentTypes = new Dictionary<FileUploadType, string>
     {
         { FileUploadType.Jpeg, "image/jpeg" },
     };
 
-    private static Dictionary<FileUploadType, List<string>> _extensions = new Dictionary<FileUploadType, List<string>>
+    private static readonly Dictionary<FileUploadType, List<string>> _extensions = new Dictionary<FileUploadType, List<string>>
     {
         { FileUploadType.Jpeg, new List<string> { ".jpg", ".jpeg" }},
     };
 
-    private static Dictionary<FileUploadType, List<byte[]>> _signatures = new Dictionary<FileUploadType, List<byte[]>>
+    private static readonly Dictionary<FileUploadType, List<byte[]>> _signatures = new Dictionary<FileUploadType, List<byte[]>>
     {
         {
             FileUploadType.Jpeg, new List<byte[]>
