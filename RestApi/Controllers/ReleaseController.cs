@@ -17,12 +17,11 @@ public class ReleaseController : ControllerBase
     private readonly IFileValidator _fileValidator;
 
     public ReleaseController(IReleaseService releaseService,
-        IFileUploadService fileUploadService,
-        IFileValidator fileValidator)
+        IFileUploadService fileUploadService)
     {
         _releaseService = releaseService;
         _fileUploadService = fileUploadService;
-        _fileValidator = fileValidator;
+        _fileValidator = new ImageFileValidator(FileValidationSpecsBuilder.Build(FileUploadType.Jpeg));
     }
 
     [HttpPost]
@@ -84,9 +83,12 @@ public class ReleaseController : ControllerBase
         _fileValidator.Validate(file);
         var fileId = await _fileUploadService.StoreFile(file.OpenReadStream());
 
-        // TODO: store file for release in db (fileId) 
-
-        // TODO: return the file id
+        // TODO:
+        // - store file for release in db (fileId) 
+        // - after file is stored, trigger a background task 
+        //      - to scale it down when needed
+        //      - to create and store a thumbnail image to db
+        // - return the file id
         return fileId;
     }
 
