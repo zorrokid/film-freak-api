@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using FilmFreakApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using FilmFreakApi.Application.Interfaces;
 using FilmFreakApi.Domain.Entities;
 using FilmFreakApi.RestApi.Validators;
+using FilmFreakApi.Application.Models;
 
 namespace FilmFreakApi.RestApi.Controllers;
 
@@ -25,17 +25,17 @@ public class ReleaseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ReleaseDTO>> PostRelease(Release release)
+    public async Task<ActionResult<ReleaseDTO>> PostRelease(ReleaseDTO release)
     {
         await _releaseService.AddReleaseAsync(release);
-        return CreatedAtAction(nameof(GetRelease), new { id = release.Id }, ReleaseToDTO(release));
+        return CreatedAtAction(nameof(GetRelease), new { id = release.Id }, release);
     }
 
     [HttpGet]
     public async Task<IEnumerable<ReleaseDTO>> GetReleases()
     {
         var releases = await _releaseService.GetReleasesAsync();
-        var result = releases.Select(i => ReleaseToDTO(i));
+        var result = releases.Select(i => (ReleaseDTO)i);
         return result;
     }
 
@@ -44,7 +44,7 @@ public class ReleaseController : ControllerBase
     {
         var release = await _releaseService.GetReleaseAsync(id);
         if (release == null) return NotFound();
-        return ReleaseToDTO(release);
+        return (ReleaseDTO)release;
     }
 
     [HttpPut("{id}")]
@@ -92,12 +92,4 @@ public class ReleaseController : ControllerBase
         return fileId;
     }
 
-
-    private ReleaseDTO ReleaseToDTO(Release release) => new ReleaseDTO
-    {
-        Id = release.Id,
-        Title = release.Name,
-        Barcode = release.Barcode,
-        ExternalId = release.ExternalId
-    };
 }

@@ -1,4 +1,5 @@
 using FilmFreakApi.Application.Interfaces;
+using FilmFreakApi.Application.Models;
 using FilmFreakApi.Domain.Entities;
 
 namespace FilmFreakApi.Application.Services;
@@ -12,9 +13,9 @@ public class ReleaseService : IReleaseService
         _releaseRepository = releaseRepository;
     }
 
-    public async Task AddReleaseAsync(Release release)
+    public async Task AddReleaseAsync(ReleaseDTO release)
     {
-        await _releaseRepository.AddAsync(release);
+        await _releaseRepository.AddAsync((Release)release);
     }
 
     public async Task<Release?> GetReleaseAsync(long id)
