@@ -132,4 +132,3 @@ To move databse to certain migration
 - Collection items have ownership
   - they're visible only for the owner unless owner sets a public visibility
   - only owner can modify the collection item 
-
