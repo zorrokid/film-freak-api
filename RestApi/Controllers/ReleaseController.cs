@@ -14,17 +14,14 @@ public class ReleaseController : ControllerBase
 {
     private readonly IReleaseService _releaseService;
     private readonly IFileUploadService _fileUploadService;
-    private readonly IFileValidator _fileValidator;
     private readonly ILogger<ReleaseController> _logger;
 
     public ReleaseController(IReleaseService releaseService,
         IFileUploadService fileUploadService,
-        IFileValidator fileValidator,
         ILogger<ReleaseController> logger)
     {
         _releaseService = releaseService;
         _fileUploadService = fileUploadService;
-        _fileValidator = fileValidator;
         _logger = logger;
         _logger.LogInformation("ReleaseController created");
     }
@@ -86,7 +83,14 @@ public class ReleaseController : ControllerBase
     [HttpPost("{id}/files")]
     public async Task<string> UploadFile(IFormFile file)
     {
-        _fileValidator.Validate(file);
+        var fileValidator = new ImageFileValidator(new FileValidationSpecs(
+            "image/jpeg",
+            new List<string> { ".jpg", ".jpeg" },
+            // TODO: check if this is the correct signature for a jpeg
+            new List<byte[]> { new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 } },
+            1000000
+        ));
+        fileValidator.Validate(file);
         var fileId = await _fileUploadService.StoreFile(file.OpenReadStream());
 
         // TODO: store file for release in db (fileId) 
