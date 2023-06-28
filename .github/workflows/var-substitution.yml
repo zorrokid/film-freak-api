@@ -1,0 +1,22 @@
+on: [push]
+name: variable substitution in json, xml, and yml files
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: microsoft/variable-substitution@v1 
+      with:
+        files: 'RestApi/appsettings.json'
+      env:
+        Database.ConnectionString: ${{ secrets.DATABASE_CONNECTION_STRING }}
+        Database.AuthDbConnectionString: ${{ secrets.AUTH_DB_CONNECTION_STRING }}
+        AdminCredentials.UserName: ${{ secrets.ADMIN_USERNAME }}
+        AdminCredentials.Email: ${{ secrets.ADMIN_USERNAME }}
+        AdminCredentials.Password: ${{ secrets.ADMIN_USERNAME }}
+        JWT.ValidAudience: ${{ secrets.JWT_VALID_AUDIENCE }}
+        JWT.ValidIssuer: ${{ secrets.JWT_VALID_ISSUER }}
+        JWT.Secret: ${{ secrets.JWT_SECRET }}
+        CORS.AllowedOrigins: ${{ secrets.CORS_ALLOWED_ORIGINS }}
