@@ -133,7 +133,6 @@ builder.Services.AddScoped<IImportService, ImportService>();
 builder.Services.AddScoped<IReleaseService, ReleaseService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IFileUploadService, LocalStorageFileService>();
-builder.Services.AddScoped<IFileValidator, ImageFileValidator>();
 
 var app = builder.Build();
 
