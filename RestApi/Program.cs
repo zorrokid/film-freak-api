@@ -13,6 +13,7 @@ using FilmFreakApi.Infrastructure.Persistence.Repositories;
 using FilmFreakApi.Application.Services;
 using FilmFreakApi.Auth.Interfaces;
 using FilmFreakApi.Infrastructure.Persistence.Files;
+using FilmFreakApi.RestApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -132,7 +133,7 @@ builder.Services.AddScoped<IImportService, ImportService>();
 builder.Services.AddScoped<IReleaseService, ReleaseService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IFileUploadService, LocalStorageFileService>();
-
+builder.Services.AddScoped<IFileValidator, ImageFileValidator>();
 
 var app = builder.Build();
 
