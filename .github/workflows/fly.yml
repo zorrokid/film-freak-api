@@ -4,11 +4,11 @@ on:
     branches:
       - main
 jobs:
-  build:
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@v2
-
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - uses: microsoft/variable-substitution@v1 
         with:
           files: 'RestApi/appsettings.json'
@@ -22,11 +22,6 @@ jobs:
           JWT.ValidIssuer: ${{ secrets.JWT_VALID_ISSUER }}
           JWT.Secret: ${{ secrets.JWT_SECRET }}
           CORS.AllowedOrigins: ${{ secrets.CORS_ALLOWED_ORIGINS }}
-  deploy:
-    name: Deploy app
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
