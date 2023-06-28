@@ -14,8 +14,8 @@ jobs:
         Database.ConnectionString: ${{ secrets.DATABASE_CONNECTION_STRING }}
         Database.AuthDbConnectionString: ${{ secrets.AUTH_DB_CONNECTION_STRING }}
         AdminCredentials.UserName: ${{ secrets.ADMIN_USERNAME }}
-        AdminCredentials.Email: ${{ secrets.ADMIN_USERNAME }}
-        AdminCredentials.Password: ${{ secrets.ADMIN_USERNAME }}
+        AdminCredentials.Email: ${{ secrets.ADMIN_EMAIL }}
+        AdminCredentials.Password: ${{ secrets.ADMIN_PASSWORD }}
         JWT.ValidAudience: ${{ secrets.JWT_VALID_AUDIENCE }}
         JWT.ValidIssuer: ${{ secrets.JWT_VALID_ISSUER }}
         JWT.Secret: ${{ secrets.JWT_SECRET }}
