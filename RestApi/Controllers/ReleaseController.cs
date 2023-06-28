@@ -15,18 +15,24 @@ public class ReleaseController : ControllerBase
     private readonly IReleaseService _releaseService;
     private readonly IFileUploadService _fileUploadService;
     private readonly IFileValidator _fileValidator;
+    private readonly ILogger<ReleaseController> _logger;
 
     public ReleaseController(IReleaseService releaseService,
-        IFileUploadService fileUploadService)
+        IFileUploadService fileUploadService,
+        IFileValidator fileValidator,
+        ILogger<ReleaseController> logger)
     {
         _releaseService = releaseService;
         _fileUploadService = fileUploadService;
-        _fileValidator = new ImageFileValidator(FileValidationSpecsBuilder.Build(FileUploadType.Jpeg));
+        _fileValidator = fileValidator;
+        _logger = logger;
+        _logger.LogInformation("ReleaseController created");
     }
 
     [HttpPost]
     public async Task<ActionResult<ReleaseDTO>> PostRelease(ReleaseDTO release)
     {
+        _logger.LogInformation("PostRelease called");
         await _releaseService.AddReleaseAsync(release);
         return CreatedAtAction(nameof(GetRelease), new { id = release.Id }, release);
     }
@@ -83,12 +89,9 @@ public class ReleaseController : ControllerBase
         _fileValidator.Validate(file);
         var fileId = await _fileUploadService.StoreFile(file.OpenReadStream());
 
-        // TODO:
-        // - store file for release in db (fileId) 
-        // - after file is stored, trigger a background task 
-        //      - to scale it down when needed
-        //      - to create and store a thumbnail image to db
-        // - return the file id
+        // TODO: store file for release in db (fileId) 
+
+        // TODO: return the file id
         return fileId;
     }
 
