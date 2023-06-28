@@ -13,9 +13,6 @@ RUN dotnet restore
 
 COPY . .
 
-# rename appsettings.Production.json to appsettings.json
-RUN mv RestApi/appsettings.Production.json RestApi/appsettings.json
-
 RUN dotnet build
 
 FROM build AS publish
