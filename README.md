@@ -56,21 +56,23 @@ For use in Docker-container for development environment reference these files in
   }
 ```
 
-## Run in development environment
+## Run in development environment without Docker
 
-In root folder run:
+1. Ensure appsettings.Development.json is created and populated with values as described above 
+2. Ensure PostgreSQL is running and connection string in appsettings.Development.json is correct
+3. Start the API by running `dotnet run` in the RestApi project folder
+4. Open https://localhost:5054/swagger/index.html to see Swagger UI
+5. You can get the needed JWT Bearer token for Swagger Authorization by using /api/Login endpoint in Swagger UI
 
-```bash
-dotnet run
-```
+## Run in development environment with Docker
 
-## Build Docker image
+### Build Docker image
 
 ```bash
 docker build -t filmfreakapi .
 ```
 
-## Run API from container
+### Run API from container
 
 ```bash
 docker run -it --rm -p 5054:5054 --network=host --name filmfreakapi filmfreakapi
@@ -80,7 +82,7 @@ docker run -it --rm -p 5054:5054 --network=host --name filmfreakapi filmfreakapi
 
 For development database on host machine and when referring localhost IP in connection string use: 
 
-## Swagger UI
+### Swagger UI
 
 When container is running, Swagger UI should response in:
 
@@ -111,6 +113,10 @@ To update database, from the solution root run:
 To move databse to certain migration
 
   dotnet ef database update <migration name> --context FilmFreakContext --project RestApi
+
+## Deployment
+
+Uses github action workflows to deploy automatically to fly.io. 
 
 ## Data model
 
